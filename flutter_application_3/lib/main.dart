@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_3/votos_counter.dart';
+import 'package:flutter_application_3/listView.dart';
+// import 'package:flutter_application_3/votos_counter.dart';
 
 void main() {
   runApp(const MainApp());
@@ -11,7 +12,10 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: VotosCounter()
+      title: 'Es mejor React Native',
+      debugShowCheckedModeBanner: false,
+      // home: VotosCounter()
+      home: listView()
     );
   }
 }
