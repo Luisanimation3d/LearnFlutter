@@ -55,7 +55,7 @@ class _CardScreenState extends State<CardScreen> {
                   },
                 ),
                 isThreeLine: false,
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SecondView()))
+                : () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SecondView()))
               ),
             ),
           ],
