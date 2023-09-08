@@ -12,7 +12,7 @@ class Get extends StatefulWidget {
 }
 
 class _GetState extends State<Get> {
-  bool _isLoading = true;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -39,8 +39,7 @@ class _GetState extends State<Get> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: const Center(child: Text('Dropdown con API'))),
-        body: _isLoading
-            ? const Center(child: CircularProgressIndicator())
+        body: _isLoading ? const Center(child: CircularProgressIndicator())
             // : ListView.builder(
             //     itemCount: _dataModel!.roles.length,
             //     itemBuilder: (context, index) {
@@ -73,7 +72,7 @@ class _GetState extends State<Get> {
                   DropDownComponent(
                       items: _dataModel!.roles
                           .map((role) => role.name.isEmpty ? '' : role.name)
-                          .toList(),
+                          .toList(), 
                       onChanged: (value) => debugPrint(value.toString())),
                 ],
               ));
