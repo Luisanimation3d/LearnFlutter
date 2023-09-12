@@ -1,4 +1,5 @@
 import 'package:coff_v_art/screens/login.dart';
+import 'package:coff_v_art/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -10,8 +11,10 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: LoginViewComponent()
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.lightTheme,
+      home: const LoginViewComponent()
     );
   }
 }
