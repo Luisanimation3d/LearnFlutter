@@ -10,10 +10,11 @@ import 'package:http/http.dart' as http;
 import 'package:coff_v_art/models/usuarios.dart';
 import 'package:coff_v_art/models/roles.dart';
 
-Future<Usuario> createUsuario(Map<String, dynamic> usuario) async {
+Future<Usuario> updateUsuario(Map<String, dynamic> usuario) async {
   try {
-    final response = await http.post(
-      Uri.parse('https://coff-v-art-api.onrender.com/api/user'),
+    final response = await http.put(
+      Uri.parse(
+          'https://coff-v-art-api.onrender.com/api/user/${usuario['_id']}'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -37,16 +38,16 @@ Future<Usuario> createUsuario(Map<String, dynamic> usuario) async {
   }
 }
 
-class CreateUsuarioViewComponent extends StatefulWidget {
-  CreateUsuarioViewComponent({Key? key}) : super(key: key);
+class UpdateUsuarioViewComponent extends StatefulWidget {
+  UpdateUsuarioViewComponent({Key? key, required usuario}) : super(key: key);
 
   @override
-  State<CreateUsuarioViewComponent> createState() =>
-      _CreateUsuarioViewComponentState();
+  State<UpdateUsuarioViewComponent> createState() =>
+      _UpdateUsuarioViewComponentState();
 }
 
-class _CreateUsuarioViewComponentState
-    extends State<CreateUsuarioViewComponent> {
+class _UpdateUsuarioViewComponentState
+    extends State<UpdateUsuarioViewComponent> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _telController = TextEditingController();
@@ -58,8 +59,14 @@ class _CreateUsuarioViewComponentState
   @override
   void initState() {
     super.initState();
+    _nameController.text = widget.usuario.name;
+    _telController.text = widget.usuario.tel;
+    _emailController.text = widget.usuario.email;
+    _passwordController.text = widget.usuario.password;
+    _rolController.text = widget.usuario.rol;
     _getRoles();
   }
+
   DataModelRol? _dataModelRol;
 
   _getRoles() async {
@@ -127,6 +134,7 @@ class _CreateUsuarioViewComponentState
             label: 'Nombre',
             controller: _nameController,
             keyboardType: TextInputType.text,
+            value: _nameController.text,
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Por favor ingrese un nombre';
@@ -141,6 +149,7 @@ class _CreateUsuarioViewComponentState
             label: 'Teléfono',
             controller: _telController,
             keyboardType: TextInputType.phone,
+            value: _telController.text,
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Por favor ingrese un teléfono';
@@ -154,6 +163,7 @@ class _CreateUsuarioViewComponentState
           InputComponent(
             label: 'Email',
             controller: _emailController,
+            value: _emailController.text,
             keyboardType: TextInputType.emailAddress,
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -181,7 +191,11 @@ class _CreateUsuarioViewComponentState
             height: 10,
           ),
           DropDownComponent(
-            items: _dataModelRol!.roles.map((e) => e.name.isEmpty ? '' : e.name).toList() ?? [''],
+            value: _rolController.text,
+            items: _dataModelRol!.roles
+                    .map((e) => e.name.isEmpty ? '' : e.name)
+                    .toList() ??
+                [''],
             onChanged: (value) {
               _rolController.text = value!;
             },
@@ -193,7 +207,7 @@ class _CreateUsuarioViewComponentState
             onPressed: () {
               if (_formKey.currentState!.validate()) {
                 setState(() {
-                  _futureUsuario = createUsuario({
+                  _futureUsuario = updateUsuario({
                     'name': _nameController.text,
                     'tel': _telController.text,
                     'email': _emailController.text,
