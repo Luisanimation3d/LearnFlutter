@@ -1,6 +1,9 @@
 import 'package:coff_v_art/components/input.dart';
+import 'package:coff_v_art/models/usuarios.dart';
 import 'package:coff_v_art/screens/bienvenido.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class LoginViewComponent extends StatefulWidget {
   const LoginViewComponent({Key? key}) : super(key: key);
@@ -10,14 +13,38 @@ class LoginViewComponent extends StatefulWidget {
 }
 
 class _LoginViewComponentState extends State<LoginViewComponent> {
+  bool _isLoading = false;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _formKey =
       GlobalKey<FormState>(); // Agregar una clave global para el formulario
-  
+
   // Correo y contraseña para ingresar
   final String _validEmail = 'correo@ejemplo.com';
   final String _validPassword = '123';
+
+  @override
+  void initState() {
+    super.initState();
+    _getUsuarios();
+  }
+
+  DataModelUsuario? _dataModelUsuario;
+
+  _getUsuarios() async {
+    _isLoading = true;
+    try {
+      String url = 'https://coff-v-art-api.onrender.com/api/user';
+      http.Response res = await http.get(Uri.parse(url));
+      if (res.statusCode == 200) {
+        _dataModelUsuario = DataModelUsuario.fromJson(json.decode(res.body));
+        _isLoading = false;
+        setState(() {});
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,18 +95,46 @@ class _LoginViewComponentState extends State<LoginViewComponent> {
                     // validamos credenciales
                     final enteredEmail = _emailController.text.trim();
                     final enteredPassword = _passwordController.text.trim();
+                    int positionUsuario = -1;
 
-                    if(enteredEmail == _validEmail && enteredPassword == _validPassword){
-                      Navigator.of(context).pushReplacement(MaterialPageRoute
-                      (builder: (context) => const WelcomeView(),
-                      ),
-                      );
-                    }else{
-
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Correo o contraseña errados')),
-                    );
+                    // Search the email and password in the list
+                    for (int i = 0;
+                        i < _dataModelUsuario!.usuarios.length;
+                        i++) {
+                      if (_dataModelUsuario!.usuarios[i].email ==
+                              enteredEmail &&
+                          _dataModelUsuario!.usuarios[i].password ==
+                              enteredPassword) {
+                        positionUsuario = i;
+                        break;
+                      }
                     }
+
+                    // If the email and password is correct
+                    if (positionUsuario != -1) {
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (context) => const WelcomeView(),
+                      ));
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('Correo o contraseña errados')),
+                      );
+                    }
+
+                    // if (enteredEmail == _validEmail &&
+                    //     enteredPassword == _validPassword) {
+                    //   Text('Hola');
+                    //   // Navigator.of(context).pushReplacement(MaterialPageRoute
+                    //   // (builder: (context) => const WelcomeView(),
+                    //   // ),
+                    //   // );
+                    // } else {
+                    //   ScaffoldMessenger.of(context).showSnackBar(
+                    //     const SnackBar(
+                    //         content: Text('Correo o contraseña errados')),
+                    //   );
+                    // }
                   }
                 },
                 child: const Text('Ingresar'),

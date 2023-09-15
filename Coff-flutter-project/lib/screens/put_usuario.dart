@@ -59,11 +59,11 @@ class _UpdateUsuarioViewComponentState
   @override
   void initState() {
     super.initState();
-    _nameController.text = widget.usuario.name;
-    _telController.text = widget.usuario.tel;
-    _emailController.text = widget.usuario.email;
-    _passwordController.text = widget.usuario.password;
-    _rolController.text = widget.usuario.rol;
+    // _nameController.text = widget.usuario.name;
+    // _telController.text = widget.usuario.tel;
+    // _emailController.text = widget.usuario.email;
+    // _passwordController.text = widget.usuario.password;
+    // _rolController.text = widget.usuario.rol;
     _getRoles();
   }
 
